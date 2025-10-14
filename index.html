@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz App - DSA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 750px;
+      max-width: 95%;
+      max-height: 95vh;
+      overflow-y: auto;
+    }
+    h2 {
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+    .options li {
+      margin: 10px 0;
+    }
+    .options button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f9f9f9;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: left;
+    }
+    .options button:hover {
+      background: #eaeaea;
+    }
+    #next-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+    #next-btn:hover {
+      background: #2980b9;
+    }
+    .correct {
+      background: #2ecc71 !important;
+      color: white;
+    }
+    .wrong {
+      background: #e74c3c !important;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2 id="question">Question text</h2>
+    <ul class="options" id="options"></ul>
+    <button id="next-btn">Next</button>
+  </div>
+
+  <script>
+    const questions =[
+  {
+    q: "Which of the following data structures uses LIFO order?",
+    options: ["a) Queue", "b) Stack", "c) Linked List", "d) Tree"],
+    answer: 1
+  },
+  {
+    q: "Which data structure uses FIFO order?",
+    options: ["a) Array", "b) Queue", "c) Stack", "d) Graph"],
+    answer: 1
+  },
+  {
+    q: "The time complexity of accessing an element in an array is:",
+    options: ["a) O(1)", "b) O(n)", "c) O(log n)", "d) O(n²)"],
+    answer: 0
+  },
+  {
+    q: "What is the best data structure for implementing recursion?",
+    options: ["a) Queue", "b) Stack", "c) Array", "d) Tree"],
+    answer: 1
+  },
+  {
+    q: "In a binary search tree (BST), the left child has:",
+    options: ["a) Smaller value than parent", "b) Greater value than parent", "c) Equal value to parent", "d) Random value"],
+    answer: 0
+  },
+  {
+    q: "Which data structure is most suitable for evaluating postfix expressions?",
+    options: ["a) Stack", "b) Queue", "c) Array", "d) Tree"],
+    answer: 0
+  },
+  {
+    q: "Which algorithm is based on the divide and conquer strategy?",
+    options: ["a) Quick Sort", "b) Insertion Sort", "c) Selection Sort", "d) Bubble Sort"],
+    answer: 0
+  },
+  {
+    q: "What is the time complexity of binary search?",
+    options: ["a) O(n)", "b) O(log n)", "c) O(n log n)", "d) O(1)"],
+    answer: 1
+  },
+  {
+    q: "Which of the following is a self-balancing binary search tree?",
+    options: ["a) Binary Tree", "b) AVL Tree", "c) Complete Binary Tree", "d) Heap"],
+    answer: 1
+  },
+  {
+    q: "Breadth First Search (BFS) uses:",
+    options: ["a) Stack", "b) Queue", "c) Recursion", "d) Linked List"],
+    answer: 1
+  },
+  {
+    q: "Which of the following statements is TRUE about linked lists?",
+    options: ["a) Random access is possible", "b) Nodes are stored in contiguous memory", "c) Deletion requires shifting of elements", "d) Insertion is easy and efficient"],
+    answer: 3
+  },
+  {
+    q: "In Quick sort, the worst case occurs when:",
+    options: ["a) Pivot divides array equally", "b) Pivot is always smallest or largest", "c) Pivot is random", "d) Array is already sorted"],
+    answer: 1
+  },
+  {
+    q: "The smallest element in a min heap is:",
+    options: ["a) At root", "b) At leaf", "c) In middle", "d) Anywhere"],
+    answer: 0
+  },
+  {
+    q: "Hashing is used to:",
+    options: ["a) Sort data", "b) Search data quickly", "c) Delete data", "d) Merge data"],
+    answer: 1
+  },
+  {
+    q: "What is a collision in hashing?",
+    options: ["a) Two keys hashed to different indices", "b) Two keys hashed to same index", "c) Key not found", "d) Table overflow"],
+    answer: 1
+  },
+  {
+    q: "Which of the following has lowest time complexity on average for searching?",
+    options: ["a) Array", "b) Linked List", "c) Binary Search Tree", "d) Hash Table"],
+    answer: 3
+  },
+  {
+    q: "What is the time complexity of linear search?",
+    options: ["a) O(1)", "b) O(log n)", "c) O(n)", "d) O(n log n)"],
+    answer: 2
+  },
+  {
+    q: "What is the best data structure to check for balanced parentheses?",
+    options: ["a) Queue", "b) Stack", "c) Tree", "d) Array"],
+    answer: 1
+  },
+  {
+    q: "What is the output of this code snippet?\nstack<int> s;\ns.push(10);\ns.push(20);\ns.pop();\ncout << s.top();",
+    options: ["a) 10", "b) 20", "c) Error", "d) Garbage value"],
+    answer: 0
+  },
+  {
+    q: "In a min-heap, which of the following is true?",
+    options: ["a) Root contains the smallest element", "b) Root contains the largest element", "c) All leaf nodes are smaller than the root", "d) Heap is always a complete graph"],
+    answer: 0
+  },
+  {
+    q: "For the array {3, 5, 1, 2, 4}, how many swaps are needed in Selection Sort?",
+    options: ["a) 1", "b) 2", "c) 3", "d) 4"],
+    answer: 2
+  },
+  {
+    q: "In a circular queue of size 5, if front = 3 and rear = 1, how many elements are there?",
+    options: ["a) 2", "b) 3", "c) 4", "d) 5"],
+    answer: 2
+  },
+  {
+    q: "Which of the following statements about a stack is false?",
+    options: ["a) Stack follows LIFO", "b) pop() removes top element", "c) Stack can be implemented using linked list", "d) Stack allows access to all elements at once"],
+    answer: 3
+  },
+  {
+    q: "In a doubly linked list, how many pointers are there per node?",
+    options: ["a) 1", "b) 2", "c) 3", "d) Depends on implementation"],
+    answer: 1
+  },
+  {
+    q: "Which of the following operations is not O(1) in an array?",
+    options: ["a) Access by index", "b) Update element", "c) Insert at end", "d) Insert at beginning"],
+    answer: 3
+  },
+  {
+    q: "Which of the following data structures is used to evaluate postfix expressions?",
+    options: ["a) Queue", "b) Stack", "c) Tree", "d) Array"],
+    answer: 1
+  },
+  {
+    q: "Which of these statements about a Queue is true?",
+    options: ["a) Insertion and deletion happen at the same end", "b) Deletion happens at the rear", "c) Insertion happens at the rear and deletion at the front", "d) Queue follows LIFO"],
+    answer: 2
+  },
+  {
+    q: "In a Doubly Linked List, how many null pointers are there if it has 4 nodes?",
+    options: ["a) 1", "b) 2", "c) 3", "d) 4"],
+    answer: 1
+  },
+  {
+    q: "Which data structure is used for undo operation in text editors?",
+    options: ["a) Queue", "b) Stack", "c) Linked List", "d) Tree"],
+    answer: 1
+  },
+  {
+    q: "If a hash table has 10 slots and uses mod 10 hashing, where will key 1234 be placed?",
+    options: ["a) 0", "b) 3", "c) 4", "d) 5"],
+    answer: 2
+  },
+  {
+    q: "In a max-heap, the smallest element is found —",
+    options: ["a) Always at root", "b) Always at a leaf", "c) Always at left child of root", "d) None of these"],
+    answer: 1
+  },
+  {
+    q: "Which data structure is used in backtracking algorithms?",
+    options: ["a) Stack", "b) Queue", "c) Heap", "d) Deque"],
+    answer: 0
+  },
+  {
+    q: "In a hash table of size 10 using mod hashing, key = 97 will be placed at index —",
+    options: ["a) 6", "b) 7", "c) 8", "d) 9"],
+    answer: 1
+  },
+  {
+    q: "What is the number of edges in a complete graph with 5 vertices?",
+    options: ["a) 5", "b) 8", "c) 10", "d) 12"],
+    answer: 2
+  },
+  {
+    q: "The maximum number of nodes in a binary tree of height 5 is —",
+    options: ["a) 31", "b) 30", "c) 32", "d) 25"],
+    answer: 0
+  },
+  {
+    q: "In a max heap, for any node i, the value of parent(i) is:",
+    options: ["a) Always smaller than child nodes", "b) Always greater than or equal to child nodes", "c) Always equal to child nodes", "d) None of the above"],
+    answer: 1
+  },
+  {
+    q: "Which of the following has the fastest access time?",
+    options: ["a) Stack", "b) Array", "c) Queue", "d) Linked List"],
+    answer: 1
+  },
+  {
+    q: "Which traversal of a binary tree prints the root node first?",
+    options: ["a) Preorder", "b) Inorder", "c) Postorder", "d) Level Order"],
+    answer: 0
+  },
+  {
+    q: "In which situation is a circular queue better than a linear queue?",
+    options: ["a) When memory is limited", "b) When there is infinite memory", "c) When random access is needed", "d) None"],
+    answer: 0
+  },
+  {
+    q: "Which of the following is true about a doubly linked list?",
+    options: ["a) Traversal possible only in one direction", "b) Extra memory required for back pointer", "c) Cannot delete nodes easily", "d) None"],
+    answer: 1
+  },
+  {
+    q: "If we enqueue 1,2,3 and dequeue once, then enqueue 4 — final front element is?",
+    options: ["a) 2", "b) 3", "c) 1", "d) 4"],
+    answer: 0
+  },
+
+  {
+    q: "In dynamic programming, overlapping subproblems means:",
+    options: ["a) Each subproblem is solved independently", "b) Subproblems repeat and can be reused", "c) No subproblems repeat", "d) All are independent"],
+    answer: 1
+  },
+  {
+    q: "Which data structure is used in Breadth First Search?",
+    options: ["a) Stack", "b) Queue", "c) Priority Queue", "d) Hash Table"],
+    answer: 1
+  },
+  {
+    q: "In a linked list, the time complexity for finding length is:",
+    options: ["a) O(1)", "b) O(log n)", "c) O(n)", "d) O(n²)"],
+    answer: 2
+  },
+  {
+    q: "Which of these cannot be implemented using an array?",
+    options: ["a) Queue", "b) Stack", "c) Linked List", "d) Heap"],
+    answer: 2
+  },
+  {
+    q: "If a tree has only left children, it becomes equivalent to:",
+    options: ["a) Queue", "b) Linked List", "c) Stack", "d) Array"],
+    answer: 1
+  },
+  {
+    q: "How many child nodes does a binary tree node have at maximum?",
+    options: ["a) 1", "b) 2", "c) 3", "d) n"],
+    answer: 1
+  },
+  {
+    q: "Which of these operations is not possible in O(1) in a stack?",
+    options: ["a) Push", "b) Pop", "c) Peek", "d) Search element by value"],
+    answer: 3
+  },
+  {
+    q: "Which traversal order gives nodes in non-decreasing order for BST?",
+    options: ["a) Preorder", "b) Postorder", "c) Inorder", "d) Level Order"],
+    answer: 2
+  },
+  {
+    q: "What is the best case time complexity of Binary Search?",
+    options: ["a) O(1)", "b) O(log n)", "c) O(n)", "d) O(n log n)"],
+    answer: 0
+  }
+]
+
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+
+    let currentIndex = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      resetState();
+      let current = questions[currentIndex];
+      questionEl.innerText = (currentIndex + 1) + ". " + current.q;
+
+      current.options.forEach((opt, idx) => {
+        const li = document.createElement("li");
+        const button = document.createElement("button");
+        button.innerText = opt;
+        button.onclick = () => selectAnswer(idx);
+        li.appendChild(button);
+        optionsEl.appendChild(li);
+      });
+    }
+
+    function resetState() {
+      nextBtn.style.display = "none";
+      optionsEl.innerHTML = "";
+    }
+
+    function selectAnswer(idx) {
+      const correct = questions[currentIndex].answer;
+      const buttons = optionsEl.querySelectorAll("button");
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === correct) btn.classList.add("correct");
+        if (i === idx && i !== correct) btn.classList.add("wrong");
+      });
+      if (idx === correct) score++;
+      nextBtn.style.display = "inline-block";
+    }
+
+    function showScore() {
+      resetState();
+      questionEl.innerText = `You scored ${score} out of ${questions.length}!`;
+      nextBtn.innerText = "Restart";
+      nextBtn.style.display = "inline-block";
+    }
+
+    function handleNext() {
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < questions.length) {
+        handleNext();
+      } else {
+        currentIndex = 0;
+        score = 0;
+        nextBtn.innerText = "Next";
+        loadQuestion();
+      }
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
